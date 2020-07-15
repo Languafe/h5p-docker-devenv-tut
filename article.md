@@ -230,6 +230,12 @@ If you did, then we're done!
 
 You can now hack away inside the repos folder on your machine and the contents will be available inside the container.
 
+## Final note on volumes and persistence
+
+We use so called named volumes to persist the contents of /var/www/html of the drupal container, and /var/lib/mysql of the mysql container. This means that the drupal installation and configuration will be persisted as long as we don't remove the volumes.
+
+If we remove the volumes, we will have to reinstall drupal and the plugin etc all over. 
+
 ## Conclusion
 
 There are many steps here that can probably be automated further with a more specialized Dockerfile.
