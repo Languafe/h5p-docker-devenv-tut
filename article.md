@@ -42,6 +42,7 @@ But first, we'll prepare a simple folder structure that matches the volume mappi
 code/
   docker-devenv/
     docker-compose.yml
+    uploads.ini
   repos/
     h5p-greetingcard/
       greetingcard.css
@@ -51,6 +52,17 @@ code/
 ```
 
 > The file contents for the h5p-greetingcard folder can be gotten from the [Hello world tutorial](https://h5p.org/tutorial-greeting-card).
+
+
+Add the following to uploads.ini:
+
+```ini
+file_uploads = On
+memory_limit = 64M
+upload_max_filesize = 64M
+post_max_size = 64M
+max_execution_time = 600
+```
 
 Then add the following contents to docker-compose.yml:
 
@@ -64,6 +76,7 @@ services:
       - "80:80"
     volumes:
     - ../repos:/mnt/h5pdev
+    - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     - drupal-storage:/var/www/html
   db:
     image: mysql:5.7
@@ -86,6 +99,8 @@ Both services simply reference images straight from the Docker hub.
 
 - Drupal: https://hub.docker.com/_/drupal
 - MySQL: https://hub.docker.com/_/mysql
+
+> Mounting the uploads.ini file is basically just a trick for changing a handful of php settings related to uploads without creating a new image.
 
 So, as soon as we run this, docker will create a network and then run two containers that are connected to it.
 
@@ -183,7 +198,7 @@ Navigate to http://localhost/admin/modules/install and paste the URL in the "Ins
 
 Upon successful installation, click "Enable newly installed modules", then scroll to the bottom of the page to enable *H5P* and *H5P Editor*.
 
-Upon saving you will get an error message saying that the PHP max upload size is quite small (2 MB). We'll ignore this for now.
+~~Upon saving you will get an error message saying that the PHP max upload size is quite small (2 MB). We'll ignore this for now.~~ Upload file size limit should be taken care of with the uploads.ini file that is mounted.
 
 ### Enabling H5P development mode and development folder
 
